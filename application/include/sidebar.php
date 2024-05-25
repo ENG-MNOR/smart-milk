@@ -2,7 +2,7 @@
 	<div class="sidebar-content js-simplebar">
 		<a class='sidebar-brand' href='index.html'>
 			<span class="sidebar-brand-text align-middle">
-				Bilciye
+				Smart Milk System
 				<!-- <sup><small class="badge bg-primary text-uppercase">Pro</small></sup> -->
 			</span>
 			<svg class="sidebar-brand-icon align-middle" width="32px" height="32px" viewBox="0 0 24 24" fill="none"
@@ -16,26 +16,25 @@
 
 		<div class="sidebar-user">
 			<div class="d-flex justify-content-center">
-				<div class="flex-shrink-0">
-					<img src="../../img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" />
+				<div class="flex-shrink-0 profile">
 				</div>
 				<div class="flex-grow-1 ps-2">
-					<a class="sidebar-user-title dropdown-toggle" href="#" data-bs-toggle="dropdown">
-						Charles Hall
+					<a class="sidebar-user-title dropdown-toggle username" href="#" data-bs-toggle="dropdown">
+						
 					</a>
 					<div class="dropdown-menu dropdown-menu-start">
 						<a class='dropdown-item' href='pages-profile.html'><i class="align-middle me-1"
 								data-feather="user"></i> Profile</a>
-						<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i>
-							Analytics</a>
-						<div class="dropdown-divider"></div>
-						<a class='dropdown-item' href='pages-settings.html'><i class="align-middle me-1"
+						<!-- <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i>
+							Analytics</a> -->
+						<!-- <div class="dropdown-divider"></div> -->
+						<!-- <a class='dropdown-item' href='pages-settings.html'><i class="align-middle me-1"
 								data-feather="settings"></i> Settings &
 							Privacy</a>
 						<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i>
-							Help Center</a>
+							Help Center</a> -->
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">Log out</a>
+						<a class="dropdown-item logout" href="#">Log out</a>
 					</div>
 
 					<div class="sidebar-user-subtitle">Designer</div>
@@ -59,8 +58,7 @@
 								class="sidebar-badge badge bg-primary">Pro</span></a></li>
 				</ul> -->
 			</li>
-
-			<li class="sidebar-item">
+			<!-- <li class="sidebar-item">
 				<a data-bs-target="#pages" data-bs-toggle="collapse" class="sidebar-link collapsed">
 					<i class="align-middle" data-feather="layout"></i> <span class="align-middle">Pages</span>
 				</a>
@@ -78,14 +76,13 @@
 								class="sidebar-badge badge bg-primary">Pro</span></a></li>
 					<li class="sidebar-item"><a class='sidebar-link' href='pages-blank.html'>Blank Page</a></li>
 				</ul>
-			</li>
+			</li> -->
 
-			<li class="sidebar-item">
+			<!-- <li class="sidebar-item">
 				<a class='sidebar-link' href='pages-profile.html'>
 					<i class="align-middle" data-feather="user"></i> <span class="align-middle">Profile</span>
 				</a>
-			</li>
-
+			</li> -->
 			<li class="sidebar-item">
 				<a class='sidebar-link' href='../view/admin.php'>
 					<i class="align-middle" data-feather="credit-card"></i> <span class="align-middle">Admin</span>
@@ -93,7 +90,7 @@
 			</li>
 
 			<li class="sidebar-item">
-				<a class='sidebar-link' href='pages-tasks.html'>
+				<a class='sidebar-link' href='../view/tank.php'>
 					<i class="align-middle" data-feather="list"></i> <span class="align-middle">Tasks</span>
 					<span class="sidebar-badge badge bg-primary">Pro</span>
 				</a>
@@ -297,3 +294,27 @@
 		</div>
 	</div>
 </nav>
+<script src='../../js/jquery-3.3.1.min.js'></script>
+
+<script>
+					
+
+
+	$(document).ready(function(){
+		showData();
+function showData() {
+    var storedName = localStorage.getItem('username'); // Retrieve the username from localStorage
+    var imagePath = localStorage.getItem('image'); // Get the image path from localStorage
+    var imgSrc = (imagePath && imagePath !== 'no') ? '../uploads/' + imagePath : '../../img/avatars/avatar.jpg';
+    $('.profile').html(`<img src='${imgSrc}' class='avatar img-fluid rounded me-1' alt='${storedName || 'Charles Hall'}'/>`);
+	$('.username').text(storedName);
+}
+$(document).on('click', '.logout', function(){
+ localStorage.clear();
+ window.location.href = '../view/pages-sign-in.php';
+})
+
+		
+	})
+	  
+</script>

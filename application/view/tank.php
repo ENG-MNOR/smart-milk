@@ -13,7 +13,7 @@ include '../include/nav.php'
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text mt-4">
-                    <h4>List Of admins</h4>
+                    <h4>List Of Tanks</h4>
                  
                 </div>
             </div>
@@ -41,11 +41,9 @@ include '../include/nav.php'
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>name</th>
-                                        <th>email</th>
-                                        <th>username</th>
-                                        <th>password</th>
-                                        <th>Status</th>
+                                        <th>note</th>
+                                        <th>Quantity</th>
+                                        <th>Date</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -66,60 +64,31 @@ include '../include/nav.php'
 
 <!-- <div class="modal fade adminModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
 
-<div class="modal fade userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade tankModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add New User (Only Admin Based)</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add New Tank (Only Admin Based)</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form>
-                <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">name:</label>
-                        <input type="text" class="form-control name" placeholder="@name" required>
-</div>
                     <div class="mb-3">
                         <!-- <label for="recipient-name" class="col-form-label">name:</label> -->
-                        <input type="hidden" class="form-control id" 
+                        <input type="hidden" class="form-control id" placeholder="@username" 
                             required>
                     </div>
                 <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Username:</label>
-                        <input type="text" class="form-control usernames" placeholder="@username" 
+                        <label for="recipient-name" class="col-form-label">note:</label>
+                        <input type="text" class="form-control note" placeholder="@username" 
                             required>
                     </div>
                     <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Email</label>
-                        <input type="text" class="form-control email" placeholder="user@gmail.com" 
+                        <label for="message-text" class="col-form-label">quantity</label>
+                        <input type="text" class="form-control quantity" placeholder="quantity" 
                             required>
                     </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">image</label>
-                        <input type="file" class="form-control image" placeholder="user@gmail.com" 
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Password</label>
-                        <input type="password" class="form-control password" placeholder="@password"
-                            required>
-                        <!-- <input type="text" hidden class="form-control id" > -->
-                    </div>
-                    <div class="mb-3" style="display: flex; align-items: center;">
-                        <input type='checkbox' class='showPass mr-2' id="show" />
-                        <label for="show" class="col-form-label">
-                            Show Password
-                        </label>
-
-                    </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Status</label>
-                        <!-- <input type="text" class="form-control status" value="active" placeholder="status" disabled> -->
-                        <select name="" id="" class="form-select status">
-                            <option value="active">active</option>
-                            <option value="block">block</option>
-                        </select>
-                    </div>
+                
 
                 </form>
             </div>
@@ -142,7 +111,7 @@ include '../include/footer.php';
 <script>
     $(document).ready(() => {
 
-        $(document).on("click", ".deleteUser", function() {
+        $(document).on("click", ".deletetank", function() {
         
             var id = $(this).attr('delID')
             alert(id);
@@ -159,14 +128,14 @@ include '../include/footer.php';
                             method: "POST",
                             data: {
                                 "id": id,
-                                "action": "deleteUsers"
+                                "action": "deleteTank"
                             },
-                            url: "../api/admin.php",
+                            url: "../api/tank.php",
                             success: (res) => {
                                 swal("Data Has Been removed!", {
                                     icon: "success",
                                 });
-                                readAdmin();
+                                readTank();
                             },
                             error: (res) => {
                                 console.log(res)
@@ -180,130 +149,54 @@ include '../include/footer.php';
                 });
 
         })
-        $(document).on('click','.save',() => {
-             alert("click")
-                if ($(".email").val() == "") {
-                    alert("all fields are required email", "error", 2000);
-                } else if ($(".name").val() == "") {
-                    alert("all fields are required name", "error", 2000);
-                } 
-                else if ($(".password").val() == "") {
-                    alert("all fields are required pass", "error", 2000);
-                } else if ($(".status").val() == "") {
-                    alert("all fields are required status", "error", 2000);
-
-                } 
-                else if ($(".usernames").val() == "") {
-                    alert("all fields are required username", "error", 2000);
-                }
-                 else {
+        $(".save").click(() => {
+            // alert("click")
+                if ($(".note").val() == "") {
+                    alert("all fields are required", "error", 2000);
+                } else if ($(".quantity").val() == "") {
+                    alert("all fields are required", "error", 2000);
+                }else {
                     alert("Click");
 
                     if ($(".save").text() == "save") {
-                        var data = new FormData();
-                        data.append("name", $(".name").val())
-                        data.append("email", $(".email").val())
-                        data.append("password", $(".password").val())
-                        data.append("username", $(".usernames").val())
-                        data.append("status", $(".status").val())
-                        data.append("action", "createUsers")
-                        data.append("profile_image", $(".image")[0].files[0])
-                        if (emailVerify($(".email").val())) {
-                            adminCheck($(".email").val(), "users", (result) => {
-                                if (result) {
-                                    alert("user all ready exist please create new one 🤷‍♂😢️", "error", 2000);
-                                } else {
-                                    $.ajax({
-                                        method: "POST",
-                                        dataType: "JSON",
-                                        processData: false,
-                                        cache: false,
-                                        contentType: false,
-                                        data: data,
-                                        url: "../api/admin.php",
-                                        success: (res) => {
-                                            console.log(res);
-                                            readAdmin();
-                                            $(".userModal").modal('hide');
-                                            alert("user Was Added Successfully 🔥", "success", 2000);
-                                        },
-                                        error: (error) => {
-                                            console.log(error);
-                                            alert("Internal Server Error Ocurred 🤷‍♂😢️", "error", 2000);
-                                        }
-                                    })
-                                }
-                            });
-                        } else {
-                            {
-                                alert("please check the format of your email 🤷‍♂😢️", "error", 2000);
-                            }
+                        data={
+                            note: $(".note").val(),
+                            quantity: $(".quantity").val(),
+                            action:"createTank"
                         }
-
+                        $.ajax({
+                                    method: "POST",
+                                    dataType: "JSON",
+                                    data: data,
+                                    url: "../api/tank.php",
+                                    success: (res) => {
+                                        readTank();
+                                        $(".tankModal").modal("hide");
+                                        alert("tank Was updated Successfully 🔥", "success", 2000);
+                                        console.log(res);
+                                    },
+                                    error: (error) => {
+                                        alert("Internal Server Error Ocurred 🤷‍♂😢️", "error", 2000);
+                                        console.log(error);
+                                    }
+                                })
 
 
                     } else {
-                    
-                        if ($(".image")[0].files.length > 0) {
-                            var data = new FormData();
-                            data.append("name", $(".name").val())
-                        data.append("email", $(".email").val())
-                        data.append("password", $(".password").val())
-                        data.append("username", $(".usernames").val())
-                        data.append("status", $(".status").val())
-                        data.append("id", $(".id").val())
-                        data.append("hasProfile", true)
-
-                        data.append("action", "createUsers")
-                        data.append("profile_image", $(".image")[0].files[0])
-                            data.append("action", "updateUsers")
-                            
-                            if (emailVerify($(".email").val())) {
-                                $.ajax({
-                                    method: "POST",
-                                    dataType: "JSON",
-                                    processData: false,
-                                    cache: false,
-                                    contentType: false,
-                                    data: data,
-                                    url: "../api/admin.php",
-                                    success: (res) => {
-                                        readAdmin();
-                                        $(".userModal").modal("hide");
-                                        alert("user Was updated Successfully 🔥", "success", 2000);
-                                        console.log(res);
-                                    },
-                                    error: (error) => {
-                                        alert("Internal Server Error Ocurred 🤷‍♂😢️", "error", 2000);
-                                        console.log(error);
-                                    }
-                                })
-                            } else {
-                                {
-                                    alert("please check the format of your email 🤷‍♂😢️", "error", 2000);
-                                }
-                            }
-
-                        } else {
-                            data = {
-                                name: $(".name").val(),
-                                email: $(".email").val(),
-                                password: $(".password").val(),
-                                username: $(".usernames").val(),
-                                status: $(".status").val(),
-                                id: $(".id").val(),
-                                action: "updateUsers",
-                                hasProfile: false
-                            }
-                            if (emailVerify($(".email").val())) {
+                        data={
+                            id:$('.id').val(),
+                            note: $(".note").val(),
+                            quantity: $(".quantity").val(),
+                            action:"updateTank"
+                        };
                                 $.ajax({
                                     method: "POST",
                                     dataType: "JSON",
                                     data: data,
-                                    url: "../api/admin.php",
+                                    url: "../api/tank.php",
                                     success: (res) => {
-                                        readAdmin();
-                                        $(".userModal").modal("hide");
+                                        readTank();
+                                        $(".tankModal").modal("hide");
                                         alert("user Was updated Successfully 🔥", "success", 2000);
                                         console.log(res);
                                     },
@@ -313,34 +206,22 @@ include '../include/footer.php';
                                     }
                                 })
 
-                            } else {
-                                {
-                                    alert("please check the format of your email 🤷‍♂😢️", "error", 2000);
-                                }
-                            }
 
                         }
                     }
 
 
 
-                }
+                
 
             });
           
 
         $(".add").click(() => {
-            $(".userModal").modal("show")
-            $(".status").val("active")
-            $(".status").prop("disabled", true);
+            $(".tankModal").modal("show")
             clearInputData(
-                $(".username"),
-                $(".email"),
-                $(".password"),
-                $(".name")
-                
-
-
+                $(".note"),
+                $(".quantity"),
             );
             $(".save").text("save");
 
@@ -348,7 +229,7 @@ include '../include/footer.php';
 
 
 
-   $(document).on('click','.editUser',function(){
+   $(document).on('click','.editank',function(){
      var id = $(this).attr('editID');
      alert(id);
             fetchUserData(id)
@@ -367,18 +248,15 @@ include '../include/footer.php';
                     "action": "fetchingOne",
                     "id": id,
                 },
-                url: "../api/admin.php",
+                url: "../api/tank.php",
                 success: (res) => {
-                    $(".status").prop("disabled", false);
+                  
                     console.log(res)
-                    $('.name').val(res.data[0].name)
-                    $('.usernames').val(res.data[0].username)
-                    $('.email').val(res.data[0].email)
-                    $('.password').val(res.data[0].password)
-                    $('.status').val(res.data[0].Status)
+                    $('.note').val(res.data[0].note)
+                    $('.quantity').val(res.data[0].quantity)
                     $('.id').val(res.data[0].id)
                     $('.save').text("Edit")
-                    $(".userModal").modal("show")
+                    $(".tankModal").modal("show")
                 },
                 error: (res) => {
                     console.log(res)
@@ -386,14 +264,15 @@ include '../include/footer.php';
             })
         }
 
-        const readAdmin = () => {
+        const readTank = () => {
             $.ajax({
                 method: "POST",
                 dataType: "JSON",
                 data: {
-                    "action": "readAdmins"
+                    "action": "readTanks"
+
                 },
-                url: "../api/admin.php",
+                url: "../api/tank.php",
                 success: (res) => {
                     var tr = "<tr>"
                     var {
@@ -401,18 +280,13 @@ include '../include/footer.php';
                     } = res;
                     data.forEach(value => {
                         tr += `<td>${value.id}</td>`
-                        tr += `<td>${value.name}</td>`
-                         tr += `<td>${value.email}</td>`
-                        tr += `<td>${value.username}</td>`
-                        tr += `<td>${value.password}</td>`
-                        tr += `<td>${value.Status}</td>`
-                       
-                        // tr += `<td>${value.status}</td>`
-                    //     tr += `<td><a class='btn btn-success editButton text-light fw-bold' editID=${value.admin_id}>Edit</a>
-                    //  <a class='btn btn-danger deleteAdmin text-light fw-bold'  delID=${value.admin_id}>Delete</a></td>`
+                        tr += `<td>${value.note}</td>`
+                         tr += `<td>${value.quantity}</td>`
+                        tr += `<td>${value.date}</td>`
+
                     tr += `<td>
-                        <a class='btn btn-danger text-light deleteUser' delID=${value.id}><i class="fa-solid fa-xmark"></i></a>
-                        <a class='btn btn-success text-light editUser' editID=${value.id}><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a class='btn btn-danger text-light deletetank' delID=${value.id}><i class="fa-solid fa-xmark"></i></a>
+                        <a class='btn btn-success text-light editank' editID=${value.id}><i class="fa-solid fa-pen-to-square"></i></a>
                         
                         </td>`
                         tr += '</tr>'
@@ -428,7 +302,7 @@ include '../include/footer.php';
                 },
             })
         }
-        readAdmin();
+        readTank();
 
         function showAndHidePass(checkBox, htmlInput) {
   if (checkBox) htmlInput.attr("type", "text");

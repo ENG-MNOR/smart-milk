@@ -94,9 +94,9 @@
                   </div> -->
                   <form>
                     <div class="mb-3">
-                      <label class="form-label">Phone Number</label>
-                      <input class="form-control form-control-lg tell" type="number" name="email"
-                        placeholder="Enter your " />
+                      <label class="form-label">Username </label>
+                      <input class="form-control form-control-lg username" type="text" name="email"
+                        placeholder="Enter Your Username " />
                     </div>
                     <div class="mb-3">
                       <label class="form-label">Password</label>
@@ -132,28 +132,17 @@
   <script src="../../js/app.js"></script>
   <script>
     $(document).ready(function () {
-      // function displayMessage(message, time = 3000) {
-      //   $(".error-handler").html(`
-      //           <div class="alert alert-danger">
-      //                 <strong class='text-dark'>${message}</strong>
-      //               </div>
-
-      //       `);
-      //   setTimeout(() => {
-      //     $(".error-handler").html("");
-      //   }, time);
-      // }
       // Your code here
       $(document).on("click", ".login", () => {
         alert("clicked");
-        if ($(".tell").val() == "" || $(".password").val() == "") {
+        if ($(".username").val() == "" || $(".password").val() == "") {
           alert("please enter FILL");
         } else {
           $.ajax({
             method: "POST",
             dataType: "JSON",
             data: {
-              tell: $(".tell").val(),
+              tell: $(".username").val(),
               password: $(".password").val(),
               action: "validateAuth",
             },
@@ -161,14 +150,17 @@
             success: (res) => {
               console.log(res);
               const { isFound, data } = res;
+              
+              
               // console.log(data);
               if (isFound) {
-                console.log(data);
-
+                console.log(data[0].username);
+                localStorage.setItem("username",data[0].username);
+                localStorage.setItem("image",data[0].image);
                 // alert("username is correct");
-                cit_id = data[0].cit_id;
-                localStorage.setItem('cit_id', cit_id);
-                window.location.href = "../../../../Bilciye/index.php";
+                // cit_id = data[0].cit_id;
+                // localStorage.setItem('cit_id', cit_id);
+                window.location.href = "./dahsboard.php";
               } else {
                 alert("password or username is incorrect");
               }
@@ -181,32 +173,8 @@
       });
     });
     // $(".login").click((e) => {
-
     // });
   </script>
-
-  <!-- <script>
-      document.addEventListener("DOMContentLoaded", function (event) {
-        setTimeout(function () {
-          if (localStorage.getItem("popState") !== "shown") {
-            window.notyf.open({
-              type: "success",
-              message:
-                'Get access to all 500+ components and 45+ pages with AdminKit PRO. <u><a class="text-white" href="https://adminkit.io/pricing" target="_blank">More info</a></u> 🚀',
-              duration: 10000,
-              ripple: true,
-              dismissible: false,
-              position: {
-                x: "left",
-                y: "bottom",
-              },
-            });
-
-            localStorage.setItem("popState", "shown");
-          }
-        }, 15000);
-      });
-    </script> -->
 </body>
 
 <!-- Mirrored from demo.adminkit.io/pages-sign-in by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 08 Apr 2024 07:36:15 GMT -->

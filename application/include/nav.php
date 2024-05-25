@@ -159,7 +159,7 @@
                         <div class="list-group">
                             <a href="#" class="list-group-item">
                                 <div class="row g-0 align-items-center">
-                                    <div class="col-2">
+                                    <div class="col-2 ">
                                         <img src="../../img/avatars/avatar-5.jpg"
                                             class="avatar img-fluid rounded-circle" alt="Vanessa Tucker">
                                     </div>
@@ -248,8 +248,8 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-icon pe-md-0 dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <img src="../../img/avatars/avatar.jpg" class="avatar img-fluid rounded" alt="Charles Hall" />
+                    <a class="nav-icon pe-md-0 dropdown-toggle   profile" href="#" data-bs-toggle="dropdown">
+                        <!-- <img src="../../img/avatars/avatar.jpg" class="avatar img-fluid rounded" alt="Charles Hall" /> -->
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <a class='dropdown-item' href='pages-profile.html'><i class="align-middle me-1"
@@ -269,3 +269,20 @@
             </ul>
         </div>
     </nav>
+    <script src='../../js/jquery-3.3.1.min.js'></script>
+
+<script>
+	$(document).ready(function(){
+		showData();
+function showData() {
+    var storedName = localStorage.getItem('username'); // Retrieve the username from localStorage
+    var imagePath = localStorage.getItem('image'); // Get the image path from localStorage
+    var imgSrc = (imagePath && imagePath !== 'no') ? '../uploads/' + imagePath : '../../img/avatars/avatar.jpg';
+    $('.profile').html(`<img src='${imgSrc}' class='avatar img-fluid rounded me-1' alt='${storedName || 'Charles Hall'}'/>`);
+	// $('.username').text(storedName);
+}
+
+		
+	})
+	  
+</script>

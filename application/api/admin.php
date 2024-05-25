@@ -5,15 +5,42 @@ include_once ("../config/conn.db.php");
 
 class Admin extends DatabaseConnection
 {
+    public function validateUser(mysqli $conn)
+    {
 
+        extract($_POST);
+        $res = array();
+        $data = array();
+            $sql = "SELECT *FROM $table WHERE email='$email'";
+
+        if (!$conn)
+            $res = array("error" => "there is an error in the connection");
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                if (mysqli_num_rows($result) > 0) {
+                    // $_SESSION['type']=$sess_rows['type'];
+                    while ($rows = $result->fetch_assoc()) {
+                        $data[] = $rows;
+                    }
+                    
+                    $res = array("message" => "success", "data" => $data, "isFound" => true);
+                } else
+                    $res = array("message" => "success", "isFound" => false);
+            } else {
+                $res = array("error" => "there is an error");
+            }
+        }
+        echo json_encode($res);
+    }
     public function validateAuth(mysqli $conn)
     {
 
         extract($_POST);
         $res = array();
         $data = array();
-        $sql = "SELECT *from citizen where 
-        tell='$tell' AND password='$password'";
+        $sql = "SELECT * from users where 
+        username='$tell' AND password='$password'";
         if (!$conn)
             $res = array("error" => "there is an error");
         else {
@@ -21,12 +48,15 @@ class Admin extends DatabaseConnection
             if ($result) {
                 if (mysqli_num_rows($result) > 0) {
                     // $sess_rows = $result->fetch_assoc();
-                    session_start();
-                    $_SESSION['type'] = 'citizen';
+                    // session_start();
+                    // $_SESSION['username'] =$result.username;
                     // $_SESSION['type']=$sess_rows['type'];
                     while ($rows = $result->fetch_assoc()) {
                         $data[] = $rows;
                     }
+                    // session_start();
+                    // $_SESSION['username'] = $data[0]['username'];  // Storing username in session
+                    // $_SESSION['image'] = $data[0]['image']; 
                     $res = array("message" => "success", "data" => $data, "isFound" => true);
                 } else
                     $res = array("message" => "success", "isFound" => false);
@@ -47,7 +77,7 @@ class Admin extends DatabaseConnection
         extract($_POST);
         $res = array();
         $data = array();
-        $sql = "SELECT * from citizen where 
+        $sql = "SELECT * from users where 
         email='$email'";
         if (!$conn)
             $res = array("error" => "there is an error");
@@ -72,7 +102,27 @@ class Admin extends DatabaseConnection
 
 
     }
-
+    public function fetchingOne($conn)
+    {
+        extract($_POST);
+        $res = array();
+        $data = array();
+        $sql = "SELECT *from users where id='$id'";
+        if (!$conn)
+            $res = array("error" => "there is an error");
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc()) {
+                    $data[] = $rows;
+                }
+                $res = array("message" => "success", "data" => $data);
+            } else {
+                $res = array("error" => "there is an error");
+            }
+        }
+        echo json_encode($res);
+    }
     public function ReadUsers($_conn)
     {
         extract($_POST);
@@ -126,13 +176,13 @@ class Admin extends DatabaseConnection
 
         echo json_encode($response);
     }
-    public function readWastes($_conn)
+    public function readAdmins($_conn)
     {
         extract($_POST);
         $response = array();
         $data = array();
 
-        $sql = "SELECT *FROM waste";
+        $sql = "SELECT *FROM users";
         if (!$_conn)
             $response = array("error" => "There is an error connection ", "status" => false);
         else {
@@ -157,40 +207,59 @@ class Admin extends DatabaseConnection
 
         echo json_encode($response);
     }
-    public function count($_conn)
+    public function count($conn)
     {
         extract($_POST);
-        $response = array();
-        $data = array();
-
-        $sql = "SELECT industry.ind_name, COUNT(waste_request.ind_id) AS request_count
-        FROM waste_request
-        JOIN industry ON waste_request.ind_id = industry.ind_id
-        GROUP BY waste_request.ind_id;";
-        if (!$_conn)
-            $response = array("error" => "There is an error connection ", "status" => false);
+        $res = array();
+        $sql = "SELECT COUNT(*) as counter from $table";
+        if (!$conn)
+            $res = array("error" => "there is an error");
         else {
-            try {
-                $result = $_conn->query($sql);
-                if ($result) {
-                    while ($rows = $result->fetch_assoc()) {
-                        $data[] = $rows;
-                    }
-
-                    $response = array("error" => "", "status" => true, "data" => $data);
-                } else
-                    $response = array("error" => "There is an error connection ", "status" => false);
-            } catch (Exception $e) {
-                $response = array(
-                    "error" => "There is an error occured while executing..",
-                    "message" => $e->getMessage(),
-                    "status" => false
-                );
+            $result = $conn->query($sql);
+            if ($result) {
+                $row = $result->fetch_assoc();
+                $res = array("message" => "success", "rowNumber" => $row['counter']);
+            } else {
+                $res = array("error" => "there is an error");
             }
         }
 
-        echo json_encode($response);
+        echo json_encode($res);
     }
+    // public function count($_conn)
+    // {
+    //     extract($_POST);
+    //     $response = array();
+    //     $data = array();
+
+    //     $sql = "SELECT industry.ind_name, COUNT(waste_request.ind_id) AS request_count
+    //     FROM waste_request
+    //     JOIN industry ON waste_request.ind_id = industry.ind_id
+    //     GROUP BY waste_request.ind_id;";
+    //     if (!$_conn)
+    //         $response = array("error" => "There is an error connection ", "status" => false);
+    //     else {
+    //         try {
+    //             $result = $_conn->query($sql);
+    //             if ($result) {
+    //                 while ($rows = $result->fetch_assoc()) {
+    //                     $data[] = $rows;
+    //                 }
+
+    //                 $response = array("error" => "", "status" => true, "data" => $data);
+    //             } else
+    //                 $response = array("error" => "There is an error connection ", "status" => false);
+    //         } catch (Exception $e) {
+    //             $response = array(
+    //                 "error" => "There is an error occured while executing..",
+    //                 "message" => $e->getMessage(),
+    //                 "status" => false
+    //             );
+    //         }
+    //     }
+
+    //     echo json_encode($response);
+    // }
     public function countAddress($_conn)
     {
         extract($_POST);
@@ -358,6 +427,11 @@ class Admin extends DatabaseConnection
     {
         extract($_POST);
         $response = array();
+        // $fileName = $_FILES['profile_image']['name'];
+        // $ext = explode(".", $fileName)[1];
+        // $temp = $_FILES['profile_image']['tmp_name'];
+        // $newName = rand() . "." . $ext;
+        // $uploadedPath = "../uploads/" . $newName;
         $fileName = $_FILES['profile_image']['name'];
         $ext = explode(".", $fileName)[1];
         $temp = $_FILES['profile_image']['tmp_name'];
@@ -365,7 +439,7 @@ class Admin extends DatabaseConnection
         $uploadedPath = "../uploads/" . $newName;
         if (move_uploaded_file($temp, $uploadedPath)) {
             // $sql = "INSERT INTO `citizen` (`name`, `tell`, `image`,`password`, `email`,`home_number`,`add_no`,village`)VALUES('$username','$tell','$newName', '$password','$email','$h_number','$add_no','$village');";
-            $sql = "INSERT INTO `users`(`name`, `email`, `username`, `password`, `image`) VALUES ('$name','$email','$username','$password','$newName');";
+            $sql = "INSERT INTO `users`(`name`, `email`, `username`, `password`,`Status`, `image`) VALUES ('$name','$email','$username','$password','$status','$newName');";
             if (!$_conn) {
                 $response = array("error" => "there is an error connection", "status" => false);
             } else {
@@ -440,38 +514,79 @@ class Admin extends DatabaseConnection
         echo json_encode($response);
     }
 
-    public function updateUsers($_conn)
+    public function updateUsers($conn)
     {
         extract($_POST);
         $response = array();
-
-        $sql = "UPDATE `users` SET ,`name`='$name',`email`='$email',`username`='$username',`password`='$password',`image`='$image' WHERE `id`='$id';";
-        if (!$_conn)
-            $response = array("error" => "There is an error connection ", "status" => false);
-        else {
-            try {
-                $result = $_conn->query($sql);
-                if ($result)
-                    $response = array("message" => "Admin was updated..", "status" => true);
-                else
-                    $response = array("error" => "There is an error connection ", "status" => false);
-            } catch (Exception $e) {
-                $response = array(
-                    "error" => "There is an error occured while executing..",
-                    "message" => $e->getMessage(),
-                    "status" => false
-                );
+        // UPDATE `doctors` SET `dr_id`='[value-1]',`name`='[value-2]',`gender`='[value-3]',`mobile`='[value-4]',`address`='[value-5]',`email`='[value-6]',`password`='[value-7]',`profision_id`='[value-8]',`hospital_id`='[value-9]',`verified`='[value-10]',`description`='[value-11]',`profile_image`='[value-12]' WHERE 1
+        if ($hasProfile == "true") {
+            $fileName = $_FILES['profile_image']['name'];
+            $ext = explode(".", $fileName)[1];
+            $temp = $_FILES['profile_image']['tmp_name'];
+            $newName = rand() . "." . $ext;
+            $uploadedPath = "../uploads/" . $newName;
+            if (move_uploaded_file($temp, $uploadedPath)) {
+                $sql = "UPDATE `users` SET `name`='$name',`email`='$email',`username`='$username',`password`='$password' ,`Status`='$status' ,`image`='$newName' WHERE `id`='$id';";
+                if (!$conn) {
+                    $response = array("error" => "there is an error connection", "status" => false);
+                } else {
+                    $result = $conn->query($sql);
+                    if ($result) {
+                        $response = array("message" => "Doctor was updated", "status" => true);
+                    } else {
+                        $response = array("error" => "there is an error connection", "status" => false);
+                    }
+                }
+            }
+        } else {
+            $sql = "UPDATE `users` SET `name`='$name',`email`='$email',`username`='$username',`password`='$password' ,`Status`='$status' WHERE `id`='$id';";
+            if (!$conn) {
+                $response = array("error" => "there is an error connection", "status" => false);
+            } else {
+                $result = $conn->query($sql);
+                if ($result) {
+                    $response = array("message" => "Doctor was updated", "status" => true);
+                } else {
+                    $response = array("error" => "there is an error connection", "status" => false);
+                }
             }
         }
 
+
         echo json_encode($response);
     }
+    // public function updateUsers($_conn)
+    // {
+    //     extract($_POST);
+    //     $response = array();
+
+    //     $sql = "UPDATE `users` SET `name`='$name',`email`='$email',`username`='$username',`password`='$password' ,`Status`='$status' WHERE `id`='$id';";
+    //     if (!$_conn)
+    //         $response = array("error" => "There is an error connection ", "status" => false);
+    //     else {
+    //         try {
+    //             $result = $_conn->query($sql);
+    //             if ($result)
+    //                 $response = array("message" => "Admin was updated..", "status" => true);
+    //             else
+    //                 $response = array("error" => "There is an error connection ", "status" => false);
+    //         } catch (Exception $e) {
+    //             $response = array(
+    //                 "error" => "There is an error occured while executing..",
+    //                 "message" => $e->getMessage(),
+    //                 "status" => false
+    //             );
+    //         }
+    //     }
+
+    //     echo json_encode($response);
+    // }
     public function changePassword($_conn)
     {
         extract($_POST);
         $response = array();
 
-        $sql = "UPDATE citizen set password='$password'  where email='$email';";
+        $sql = "UPDATE users set password='$password'  where email='$email';";
         if (!$_conn)
             $response = array("error" => "There is an error connection ", "status" => false);
         else {
@@ -499,8 +614,8 @@ switch ($_POST['action']) {
     // case "createCitezan":
     //     $admin->createCitezan(Admin::getConnection());
     //     break;
-    case "ReadUsers":
-        $admin->ReadUsers(Admin::getConnection());
+    case "readAdmins":
+        $admin->readAdmins(Admin::getConnection());
         break;
     case "updateUsers":
         $admin->updateUsers(Admin::getConnection());
@@ -512,8 +627,8 @@ switch ($_POST['action']) {
         $admin->createUsers(Admin::getConnection());
         break;
 
-    case "report":
-        $admin->report(Admin::getConnection());
+    case "validateUser":
+        $admin->validateUser(Admin::getConnection());
         break;
 
 
@@ -526,8 +641,8 @@ switch ($_POST['action']) {
     case "readIndustries":
         $admin->readIndustries(Admin::getConnection());
         break;
-    case "readWastes":
-        $admin->readWastes(Admin::getConnection());
+    case "fetchingOne":
+        $admin->fetchingOne(Admin::getConnection());
         break;
     // case "fetchingOne":
     //     $admin->fetchingOne(Admin::getConnection());
@@ -541,8 +656,8 @@ switch ($_POST['action']) {
     case "readAddress":
         $admin->readAddress(Admin::getConnection());
         break;
-    case "readPoints":
-        $admin->readPoints(Admin::getConnection());
+    case "count":
+        $admin->count(Admin::getConnection());
         break;
     default:
         return;
