@@ -46,7 +46,7 @@ include '../include/nav.php';
                     <div class="card-body">
                         <div class="row">
                             <div class="col mt-0">
-                                <h5 class="card-title">Orders</h5>
+                                <h5 class="card-title">Level</h5>
                             </div>
 
                             <div class="col-auto">
@@ -55,7 +55,7 @@ include '../include/nav.php';
                                 </div>
                             </div>
                         </div>
-                        <h1 class="mt-1 mb-3">2.542</h1>
+                        <h1 class="mt-1 mb-3 level"></h1>
                         <div class="mb-0">
                             <span class="badge badge-danger-light"> <i class="mdi mdi-arrow-bottom-right"></i> -5.25%
                             </span>
@@ -147,6 +147,32 @@ include '../include/footer.php'
             })
         }
         countRowNumbers("users", $(".users"))
+
+        const readLevel = () => {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                data: {
+                    "action": "readLevel"
+
+                },
+                url: "../api/level_tracking.php",
+                success: (res) => {
+                    var tr = "<tr>"
+                    var {
+                        data
+                    } = res;
+                    $('.level').html(res.data[0].level_quantity);
+
+                    console.log("data is ", data)
+                },
+                error: (res) => {
+                    console.log("There is an error")
+                    console.log(res)
+                },
+            })
+        }
+        readLevel();
 
     //     function count() {
     //         $.ajax({

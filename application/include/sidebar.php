@@ -91,19 +91,24 @@
 
 			<li class="sidebar-item">
 				<a class='sidebar-link' href='../view/tank.php'>
-					<i class="align-middle" data-feather="list"></i> <span class="align-middle">Tasks</span>
-					<span class="sidebar-badge badge bg-primary">Pro</span>
+					<i class="align-middle" data-feather="list"></i> <span class="align-middle">Tanks</span>
+					<!-- <span class="sidebar-badge badge bg-primary">Pro</span> -->
 				</a>
 			</li>
 
 			<li class="sidebar-item">
-				<a class='sidebar-link' href='calendar.html'>
-					<i class="align-middle" data-feather="calendar"></i> <span class="align-middle">Calendar</span>
-					<span class="sidebar-badge badge bg-primary">Pro</span>
+				<a class='sidebar-link' href='../view/transaction.php'>
+					<i class="align-middle" data-feather="calendar"></i> <span class="align-middle">Transactions</span>
+					<!-- <span class="sidebar-badge badge bg-primary">Pro</span> -->
 				</a>
 			</li>
-
 			<li class="sidebar-item">
+				<a class='sidebar-link' href='../view/level_tracking.php'>
+					<i class="align-middle" data-feather="calendar"></i> <span class="align-middle">Level Tracking</span>
+					<!-- <span class="sidebar-badge badge bg-primary">Pro</span> -->
+				</a>
+			</li>
+			<!-- <li class="sidebar-item">
 				<a href="#auth" data-bs-toggle="collapse" class="sidebar-link collapsed">
 					<i class="align-middle" data-feather="users"></i> <span class="align-middle">Auth</span>
 				</a>
@@ -117,7 +122,7 @@
 					<li class="sidebar-item"><a class='sidebar-link' href='pages-500.html'>500 Page <span
 								class="sidebar-badge badge bg-primary">Pro</span></a></li>
 				</ul>
-			</li>
+			</li> -->
 
 			<!-- <li class="sidebar-header">
 				Components
