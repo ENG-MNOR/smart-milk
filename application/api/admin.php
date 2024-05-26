@@ -439,7 +439,7 @@ class Admin extends DatabaseConnection
         $uploadedPath = "../uploads/" . $newName;
         if (move_uploaded_file($temp, $uploadedPath)) {
             // $sql = "INSERT INTO `citizen` (`name`, `tell`, `image`,`password`, `email`,`home_number`,`add_no`,village`)VALUES('$username','$tell','$newName', '$password','$email','$h_number','$add_no','$village');";
-            $sql = "INSERT INTO `users`(`name`, `email`, `username`, `password`,`Status`, `image`) VALUES ('$name','$email','$username','$password','$status','$newName');";
+            $sql = "INSERT INTO `users`(`name`, `email`, `username`, `password`,`Status`,`type`, `image`) VALUES ('$name','$email','$username','$password','$status','$type','$newName');";
             if (!$_conn) {
                 $response = array("error" => "there is an error connection", "status" => false);
             } else {
@@ -526,7 +526,7 @@ class Admin extends DatabaseConnection
             $newName = rand() . "." . $ext;
             $uploadedPath = "../uploads/" . $newName;
             if (move_uploaded_file($temp, $uploadedPath)) {
-                $sql = "UPDATE `users` SET `name`='$name',`email`='$email',`username`='$username',`password`='$password' ,`Status`='$status' ,`image`='$newName' WHERE `id`='$id';";
+                $sql = "UPDATE `users` SET `name`='$name',`email`='$email',`username`='$username',`password`='$password' ,`Status`='$status' ,`type`='$type',`image`='$newName' WHERE `id`='$id';";
                 if (!$conn) {
                     $response = array("error" => "there is an error connection", "status" => false);
                 } else {

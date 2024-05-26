@@ -3,8 +3,6 @@ include '../include/header.php';
 include '../include/sidebar.php';
 include '../include/nav.php'
     ?>
-
-
 <!--**********************************
             Content body start
         ***********************************-->
@@ -114,7 +112,6 @@ include '../include/footer.php';
                 dataType: "JSON",
                 data: {
                     "action": "readLevel"
-
                 },
                 url: "../api/level_tracking.php",
                 success: (res) => {

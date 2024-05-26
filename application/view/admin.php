@@ -46,6 +46,7 @@ include '../include/nav.php'
                                         <th>username</th>
                                         <th>password</th>
                                         <th>Status</th>
+                                        <th>Type</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -118,6 +119,14 @@ include '../include/nav.php'
                         <select name="" id="" class="form-select status">
                             <option value="active">active</option>
                             <option value="block">block</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">User Type</label>
+                        <!-- <input type="text" class="form-control status" value="active" placeholder="status" disabled> -->
+                        <select name="" id="" class="form-select type">
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
                         </select>
                     </div>
 
@@ -196,6 +205,9 @@ include '../include/footer.php';
                 else if ($(".usernames").val() == "") {
                     alert("all fields are required username", "error", 2000);
                 }
+                else if ($(".typoe").val() == "") {
+                    alert("all fields are required type", "error", 2000);
+                }
                  else {
                     alert("Click");
 
@@ -206,6 +218,7 @@ include '../include/footer.php';
                         data.append("password", $(".password").val())
                         data.append("username", $(".usernames").val())
                         data.append("status", $(".status").val())
+                        data.append("type", $(".type").val())
                         data.append("action", "createUsers")
                         data.append("profile_image", $(".image")[0].files[0])
                         if (emailVerify($(".email").val())) {
@@ -251,6 +264,7 @@ include '../include/footer.php';
                         data.append("password", $(".password").val())
                         data.append("username", $(".usernames").val())
                         data.append("status", $(".status").val())
+                        data.append("type", $(".type").val())
                         data.append("id", $(".id").val())
                         data.append("hasProfile", true)
 
@@ -291,6 +305,7 @@ include '../include/footer.php';
                                 password: $(".password").val(),
                                 username: $(".usernames").val(),
                                 status: $(".status").val(),
+                                type: $(".type").val(),
                                 id: $(".id").val(),
                                 action: "updateUsers",
                                 hasProfile: false
@@ -337,7 +352,8 @@ include '../include/footer.php';
                 $(".username"),
                 $(".email"),
                 $(".password"),
-                $(".name")
+                $(".name"),
+                $(".type")
                 
 
 
@@ -376,6 +392,7 @@ include '../include/footer.php';
                     $('.email').val(res.data[0].email)
                     $('.password').val(res.data[0].password)
                     $('.status').val(res.data[0].Status)
+                    $('.type').val(res.data[0].type)
                     $('.id').val(res.data[0].id)
                     $('.save').text("Edit")
                     $(".userModal").modal("show")
@@ -406,6 +423,7 @@ include '../include/footer.php';
                         tr += `<td>${value.username}</td>`
                         tr += `<td>${value.password}</td>`
                         tr += `<td>${value.Status}</td>`
+                        tr += `<td>${value.type}</td>`
                        
                         // tr += `<td>${value.status}</td>`
                     //     tr += `<td><a class='btn btn-success editButton text-light fw-bold' editID=${value.admin_id}>Edit</a>
