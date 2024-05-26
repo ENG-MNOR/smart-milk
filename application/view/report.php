@@ -8,7 +8,7 @@ include '../include/nav.php'
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text mt-4">
-                    <h4>List Of admins</h4>
+                    <h4>All the reports</h4>
                  
                 </div>
             </div>
@@ -23,7 +23,7 @@ include '../include/nav.php'
 
         <div class="card">
               <div class="card-header">
-                <h3 class="card-title">report of payment</h3>
+                <h3 class="card-title">All report</h3>
                 <div class="card-tools">
                   <ul class="pagination pagination-sm float-right">
                     <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
@@ -41,10 +41,10 @@ include '../include/nav.php'
                   <div class="col-sm-4">
                     <select name="type" id="type" class="form-control">
                       <option value="" selected >select choice</option>
-                      <option value="0" >ALL</option>
-                      <option value="custom"> custom</option>
-                      <option value="1" >Paid</option>
-                      <option value="2" >Unpaid</option>
+                      <option value="0" >ALL Tanks</option>
+                      <option value="custom"> custom of Transactions</option>
+                      <!-- <option value="1" >custom Tanks</option>
+                      <option value="2" >Unpaid</option> -->
 
                     </select>
                   </div>
@@ -99,12 +99,12 @@ $("#type").on("change",function(){
     $("#to").attr("disabled",true); 
      
     let sendingData = {
-      "table":"payment",
-      "reportAll":"reportAll"
+      "table":"tank",
+      "action":"readReport"
   } 
     $.ajax({
       method: "POST",
-      url: "../include/operations.php",
+      url: "../api/admin.php",
       data: sendingData,
       dataType: "JSON",
       success:function(data){
@@ -337,11 +337,11 @@ $("#userForm").on("submit",function(event){
   let sendingData = {
       "from":from,
       "to":to,
-      "readpay":"readpay"
+      "action":"readpay"
   } 
     $.ajax({
       method: "POST",
-      url: "../include/operations.php",
+      url: "../api/admin.php",
       data: sendingData,
       dataType: "JSON",
       success:function(data){

@@ -420,7 +420,26 @@ class Admin extends DatabaseConnection
 
         echo json_encode($response);
     }
-
+    function readReport(){
+        extract($_POST);
+        $data=array();
+        $array_data=array();
+        $conn= new mysqli("localhost","root","","smart_milk_db");
+           $sql = "SELECT  * from tank;";
+           $result = $conn->query($sql);
+           if($result){
+            while($row=$result->fetch_assoc()){
+              $array_data []=$row;
+            }
+            $data=array("status"=>true,"data"=>$array_data);
+      
+           }
+           else{
+            
+            $data=array("status"=>false, "data"=>$conn->error);
+           }
+           echo json_encode($data);   
+      }
 
 
     public function createUsers($_conn)
@@ -457,7 +476,33 @@ class Admin extends DatabaseConnection
 
         echo json_encode($response);
     }
-
+    function readpay(){
+        extract($_POST);
+        // $FROM=date_format(new date($from), 'Y-m-d H:i:s');
+        // $TO=date_format(new date($to), 'Y-m-d H:i:s');
+        $FROM = date("Y-m-d", strtotime($from));
+        $TO = date("Y-m-d", strtotime($to));
+        // echo "New date format is: ". $FROM.$TO;
+        $data=array();
+        $array_data=array();
+        $conn= new mysqli("localhost","root","","smart_milk_db");
+           $sql = "SELECT  * from transactions WHERE   `date` BETWEEN '$FROM' AND '$TO' ";   
+           $result = $conn->query($sql);
+           if($result){
+            $result = $conn->query($sql);
+            if($result){
+             while($row=$result->fetch_assoc()){
+               $array_data []=$row;
+             }
+             $data=array("status"=>true,"data"=>$array_data);
+       
+            }}
+            else{
+             
+             $data=array("status"=>false, "data"=>$conn->error);
+            }
+            echo json_encode($data); 
+      }
     public function requesting($_conn)
     {
         extract($_POST);
@@ -638,8 +683,8 @@ switch ($_POST['action']) {
     case "readReports":
         $admin->readReports(Admin::getConnection());
         break;
-    case "readIndustries":
-        $admin->readIndustries(Admin::getConnection());
+    case "readReport":
+        $admin->readReport();
         break;
     case "fetchingOne":
         $admin->fetchingOne(Admin::getConnection());
@@ -656,9 +701,12 @@ switch ($_POST['action']) {
     case "readAddress":
         $admin->readAddress(Admin::getConnection());
         break;
-    case "count":
-        $admin->count(Admin::getConnection());
+    case "readpay":
+        $admin->readpay();
         break;
+        case "count":
+            $admin->count(Admin::getConnection());
+            break;
     default:
         return;
 }

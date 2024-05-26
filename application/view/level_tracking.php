@@ -1,8 +1,8 @@
 <?php
 include '../include/header.php';
 include '../include/sidebar.php';
-include '../include/nav.php'
-    ?>
+include '../include/nav.php';
+?>
 <!--**********************************
             Content body start
         ***********************************-->
@@ -12,29 +12,16 @@ include '../include/nav.php'
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text mt-4">
                     <h4>List Of Tanks</h4>
-                 
                 </div>
             </div>
-            <!-- <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Table</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Admin</a></li>
-                </ol>
-            </div> -->
         </div>
         <!-- row -->
-
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
-                    <div class="card-header">
-
-                        <button data-toggle="modal" data-target="#exampleModal"
-                            class="btn btn-primary float-right add">Add New Admin</button>
-                    </div>
+                    <div class="card-header"></div>
                     <div class="card-block table-border-style p-3">
                         <div class="table-responsive">
-
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -42,9 +29,7 @@ include '../include/nav.php'
                                         <th>level_quantity</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                </tbody>
-
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
@@ -57,88 +42,103 @@ include '../include/nav.php'
             Content body end
         ***********************************-->
 
-<!-- <div class="modal fade adminModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
-
-<div class="modal fade tankModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add New Tank (Only Admin Based)</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <!-- <label for="recipient-name" class="col-form-label">name:</label> -->
-                        <input type="hidden" class="form-control id" placeholder="@username" 
-                            required>
-                    </div>
-                <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">note:</label>
-                        <input type="text" class="form-control note" placeholder="@username" 
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">quantity</label>
-                        <input type="text" class="form-control quantity" placeholder="quantity" 
-                            required>
-                    </div>
-                
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary save">save</button>
-            </div>
-        </div>
-    </div>
-</div>
 <?php
 include '../include/footer.php';
 ?>
+<!-- Include necessary scripts -->
 <script src='../../js/jquery-3.3.1.min.js'></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
-<script src="../iziToast-master/dist/js/iziToast.js"></script>
-<script src="../iziToast-master/dist/js/iziToast.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+<!-- Custom CSS for alert -->
+<style>
+    .fixed-top-alert {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1050;
+        display: none;
+    }
+</style>
+
+<!-- Alert container and audio element -->
+<div id="alert-container" class="fixed-top-alert"></div>
+<audio id="alert-sound" src="../uploads//reminder.mpeg" preload="auto"></audio>
+
 <script>
-    $(document).ready(() => {
+    // Function to read and display table data
+    const readTableData = () => {
+        $.ajax({
+            method: "POST",
+            dataType: "JSON",
+            data: { "action": "readLevel" },
+            url: "../api/level_tracking.php",
+            success: (res) => {
+                let tr = "";
+                const { data } = res;
+                data.forEach(value => {
+                    tr += `<tr>`;
+                    tr += `<td>${value.id}</td>`;
+                    tr += `<td>${value.level_quantity}</td>`;
+                    tr += `</tr>`;
+                });
+                $(".table tbody").html(tr);
+                $(".table").DataTable();
+                console.log("Table data updated at", new Date());
+            },
+            error: (res) => {
+                console.log("There is an error", res);
+            },
+        });
+    };
 
-        const readLevel = () => {
-            $.ajax({
-                method: "POST",
-                dataType: "JSON",
-                data: {
-                    "action": "readLevel"
-                },
-                url: "../api/level_tracking.php",
-                success: (res) => {
-                    var tr = "<tr>"
-                    var {
-                        data
-                    } = res;
-                    data.forEach(value => {
-                        tr += `<td>${value.id}</td>`
-                        tr += `<td>${value.level_quantity}</td>`                         
-                    })
-                    $(".table tbody").html(tr);
-                    $(".table").DataTable();
+    // Function to check tank level and display alerts
+    const checkTankLevel = () => {
+        $.ajax({
+            method: "POST",
+            dataType: "JSON",
+            data: { "action": "readLevel" },
+            url: "../api/level_tracking.php",
+            success: (res) => {
+                const { data } = res;
+                let showCriticalAlert = false;
+                data.forEach(value => {
+                    if (value.level_quantity <= 1000) {
+                        showCriticalAlert = true;
+                        $('#alert-sound')[0].play();
+                        $('#alert-container').html(`
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Critical Warning!</strong> The tank level is critically low (${value.level_quantity}). Please refill the tank.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        `).show();
+                    } else if (value.level_quantity <= 2000) {
+                        toastr.info(`The tank level is getting low (${value.level_quantity}). Consider refilling soon.`);
+                    }
+                });
+                if (!showCriticalAlert) {
+                    $('#alert-container').hide();
+                }
+                console.log("Tank level checked at", new Date());
+            },
+            error: (res) => {
+                console.log("There is an error", res);
+            },
+        });
+    };
 
-                    console.log("data is ", data)
-                },
-                error: (res) => {
-                    console.log("There is an error")
-                    console.log(res)
-                },
-            })
-        }
-        readLevel();
-    })
+    // Initial call to readTableData and checkTankLevel
+    readTableData();
+    checkTankLevel();
 
- 
-
-
+    // Set intervals to periodically update table data and check tank levels
+    // setInterval(readTableData, 60000); // Update table every 1 minute
+    setInterval(checkTankLevel, 15000); // Check tank levels every 1 minute
 </script>
-
+</body>
+</html>

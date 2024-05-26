@@ -157,6 +157,7 @@
                 console.log(data[0].username);
                 localStorage.setItem("username",data[0].username);
                 localStorage.setItem("image",data[0].image);
+                localStorage.setItem("type",data[0].type);
                 // alert("username is correct");
                 // cit_id = data[0].cit_id;
                 // localStorage.setItem('cit_id', cit_id);

@@ -37,7 +37,7 @@
 						<a class="dropdown-item logout" href="#">Log out</a>
 					</div>
 
-					<div class="sidebar-user-subtitle">Designer</div>
+					<div class="sidebar-user-subtitle userType"></div>
 				</div>
 			</div>
 		</div>
@@ -309,10 +309,13 @@
 		showData();
 function showData() {
     var storedName = localStorage.getItem('username'); // Retrieve the username from localStorage
-    var imagePath = localStorage.getItem('image'); // Get the image path from localStorage
+    var imagePath = localStorage.getItem('image'); 
+    var type = localStorage.getItem('type'); // Get the image path from localStorage
+	// Get the image path from localStorage
     var imgSrc = (imagePath && imagePath !== 'no') ? '../uploads/' + imagePath : '../../img/avatars/avatar.jpg';
     $('.profile').html(`<img src='${imgSrc}' class='avatar img-fluid rounded me-1' alt='${storedName || 'Charles Hall'}'/>`);
 	$('.username').text(storedName);
+	$('.userType').text(type);
 }
 $(document).on('click', '.logout', function(){
  localStorage.clear();
