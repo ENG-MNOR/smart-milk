@@ -66,7 +66,7 @@ include '../include/footer.php';
 
 <!-- Alert container and audio element -->
 <div id="alert-container" class="fixed-top-alert"></div>
-<audio id="alert-sound" src="../uploads//reminder.mpeg" preload="auto"></audio>
+<audio id="alert-sound" src="../uploads/reminder.mpeg" preload="auto"></audio>
 
 <script>
     // Function to read and display table data
@@ -95,6 +95,9 @@ include '../include/footer.php';
         });
     };
 
+    // Variable to track if the critical alert is currently displayed
+    let criticalAlertVisible = false;
+
     // Function to check tank level and display alerts
     const checkTankLevel = () => {
         $.ajax({
@@ -108,21 +111,28 @@ include '../include/footer.php';
                 data.forEach(value => {
                     if (value.level_quantity <= 1000) {
                         showCriticalAlert = true;
-                        $('#alert-sound')[0].play();
-                        $('#alert-container').html(`
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Critical Warning!</strong> The tank level is critically low (${value.level_quantity}). Please refill the tank.
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        `).show();
+                        if (!criticalAlertVisible) {
+                            $('#alert-sound')[0].play();
+                            $('#alert-container').html(`
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>Critical Warning!</strong> The tank level is critically low (${value.level_quantity}). Please refill the tank.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            `).show();
+                            criticalAlertVisible = true;
+                            $('#alert-container .close').on('click', () => {
+                                criticalAlertVisible = false;
+                            });
+                        }
                     } else if (value.level_quantity <= 2000) {
                         toastr.info(`The tank level is getting low (${value.level_quantity}). Consider refilling soon.`);
                     }
                 });
-                if (!showCriticalAlert) {
+                if (!showCriticalAlert && criticalAlertVisible) {
                     $('#alert-container').hide();
+                    criticalAlertVisible = false;
                 }
                 console.log("Tank level checked at", new Date());
             },
@@ -138,7 +148,7 @@ include '../include/footer.php';
 
     // Set intervals to periodically update table data and check tank levels
     // setInterval(readTableData, 60000); // Update table every 1 minute
-    setInterval(checkTankLevel, 15000); // Check tank levels every 1 minute
+    setInterval(checkTankLevel, 15000); // Check tank levels every 15 seconds
 </script>
 </body>
 </html>
